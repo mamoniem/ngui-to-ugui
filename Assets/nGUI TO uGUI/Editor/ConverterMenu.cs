@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.IO;
 
 public class ConverterMenu : MonoBehaviour {
+	/*
 	[MenuItem ("nGUI TO uGUI/Convert/Selected")]
 	static void OnConvertSelected () {
 		GameObject theSelectedObject;
@@ -28,8 +29,10 @@ public class ConverterMenu : MonoBehaviour {
 			Debug.LogError ("<Color=red>NOTHING SELECTED</Color>, <Color=yellow>Please select something to convert</Color>");
 		}
 	}
+	*/
 
-	[MenuItem ("nGUI TO uGUI/Convert/Widget")]
+	/*
+	[MenuItem ("nGUI TO uGUI/Atlas Convert/Selected")]
 	static void OnConvertWidget () {
 		GameObject theSelectedWidget;
 		GameObject theNewWidget;
@@ -104,17 +107,95 @@ public class ConverterMenu : MonoBehaviour {
 			Debug.LogError ("<Color=red>NOTHING SELECTED</Color>, <Color=yellow>Please select something to convert</Color>");
 		}
 	}
+	*/
+	[MenuItem ("nGUI TO uGUI/Atlas Convert/Selected")]
+	static void OnConvertAtlasSelected () {	
+		if (Selection.activeGameObject != null){
+			foreach(GameObject selectedObject in Selection.gameObjects){
+				if (selectedObject.GetComponent<UIAtlas>()){
+					UIAtlas tempNguiAtlas;
+					tempNguiAtlas = selectedObject.GetComponent<UIAtlas>();
+					if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+						Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+					}else{
+						ConvertAtlas(tempNguiAtlas);
+					}
+				}
+			}
+		}else{
+			Debug.LogError ("<Color=red>NO ATLASES SELECTED</Color>, <Color=yellow>Please select something to convert</Color>");
+		}
+	}
 
+	[MenuItem ("nGUI TO uGUI/Atlas Convert/Current Scene")]
+	static void OnConvertAtlasesInScene () {
+		UISprite[] FoundAtlasesList;
+		FoundAtlasesList = GameObject.FindObjectsOfType<UISprite>();
+		for (int c=0; c<FoundAtlasesList.Length; c++){
+			UIAtlas tempNguiAtlas;
+			tempNguiAtlas = FoundAtlasesList[c].atlas;
+			if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+				Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+			}else{
+				ConvertAtlas(tempNguiAtlas);
+			}
+		}
+	}
+
+	[MenuItem ("nGUI TO uGUI/Atlas Convert/Related To Selected")]
+	static void OnConvertAtlasesFromSelected () {
+		if (Selection.activeGameObject != null){
+			foreach(GameObject selectedObject in Selection.gameObjects){
+				if (selectedObject.GetComponent<UISprite>()){
+					UIAtlas tempNguiAtlas;
+					tempNguiAtlas = selectedObject.GetComponent<UISprite>().atlas;
+					if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+						Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+					}else{
+						ConvertAtlas(tempNguiAtlas);
+					}
+				}
+			}
+		}
+	}
 
 	/*
-	[MenuItem ("nGUI TO uGUI/Convert/Scene")]
-	static void OnConvertScene () {
-		Debug.Log ("Doing Something...");
-	}
-
-	[MenuItem ("nGUI TO uGUI/Convert/Project")]
-	static void OnConvertProject () {
-		Debug.Log ("Doing Something...");
+	[MenuItem ("nGUI TO uGUI/Atlas Convert/All over the project")]
+	static void OnConvertAtlasesAlloverTheProject () {
+		AssetDatabase.FindAssets
 	}
 	*/
+
+	static void ConvertAtlas(UIAtlas theAtlas){
+		if(!Directory.Exists("Assets/CONVERSION_DATA")){
+			AssetDatabase.CreateFolder ("Assets", "CONVERSION_DATA");
+		}else{
+			
+		}
+		AssetDatabase.CopyAsset (AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(theAtlas.name)[0]), "Assets/CONVERSION_DATA/"+theAtlas.name+".png");
+		AssetDatabase.Refresh();
+		//Debug.Log(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(theAtlas.name)[0]) + "\n" + "Assets/CONVERSION_DATA/"+theAtlas.name+".png");
+		
+		string conversionPath = "Assets/CONVERSION_DATA/"+theAtlas.name+".png";
+		TextureImporter importer = (TextureImporter)TextureImporter.GetAtPath(conversionPath);
+		importer.textureType = TextureImporterType.Sprite;
+		importer.mipmapEnabled = false;
+		importer.spriteImportMode = SpriteImportMode.Multiple;
+		
+		List <UISpriteData> theNGUISpritesList = theAtlas.spriteList;
+		SpriteMetaData[] theSheet = new SpriteMetaData[theNGUISpritesList.Count];
+		
+		for (int c=0; c<theNGUISpritesList.Count; c++){
+			float theY = theAtlas.texture.height - (theNGUISpritesList[c].y + theNGUISpritesList[c].height);
+			theSheet[c].name = theNGUISpritesList[c].name;
+			theSheet[c].pivot = new Vector2(theNGUISpritesList[c].paddingLeft, theNGUISpritesList[c].paddingBottom);
+			theSheet[c].rect = new Rect (theNGUISpritesList[c].x, theY, theNGUISpritesList[c].width, theNGUISpritesList[c].height);
+			theSheet[c].border = new Vector4(theNGUISpritesList[c].borderLeft, theNGUISpritesList[c].borderBottom, theNGUISpritesList[c].borderRight, theNGUISpritesList[c].borderTop);
+			theSheet[c].alignment = 0;
+			Debug.Log (theSheet[c].name + "       " + theSheet[c].pivot);
+		}
+		importer.spritesheet = theSheet;
+		AssetDatabase.ImportAsset(conversionPath, ImportAssetOptions.ForceUpdate);
+	}
+
 }
