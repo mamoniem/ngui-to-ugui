@@ -341,16 +341,13 @@ public class ConverterMenu : MonoBehaviour {
 		//UnityAction tempActionHolder = (UnityAction)originalButton.onClick[0];
 		//addedButton.onClick.AddListener (() => originalButton.onClick[0].target.SendMessage(originalButton.onClick[0].methodName));
 		//addedButton.onClick.AddListener (() => originalButton.onClick[0].target.gameObject.SendMessage( originalButton.onClick[0].methodName ));
+		//addedButton.onClick.SetPersistentListenerState(0, UnityEngine.Events.UnityEventCallState.RuntimeOnly);
+		//addedButton.onClick.Equals((object)originalButton.onClick[0]);
+		//addedButton.onClick.AddListener (delegate() { CheckChildUILabels(addedButton.gameObject); });
+		//addedButton.onClick.AddListener  (delegate {Debug.Log("Button " + this.gameObject.name + " has been clicked!");});
+		Debug.Log(originalButton.onClick[0].GetType());
 		//Debug.Log((originalButton.onClick[0].ToString())+"."+originalButton.onClick[0].methodName.ToString());
 
-		//if the button is using some sprites, then switch the transitons into the swap type. otherwise, keep it with the color tint!
-		if (originalButton.hoverSprite != "" &&
-		    originalButton.pressedSprite != "" &&
-		    originalButton.disabledSprite != ""){
-			addedButton.transition = Selectable.Transition.SpriteSwap;
-		}else{
-			addedButton.transition = Selectable.Transition.ColorTint;
-		}
 		
 		// set the image sprite color
 		addedImage.color = Color.white;
@@ -364,6 +361,16 @@ public class ConverterMenu : MonoBehaviour {
 		tempColor.fadeDuration = originalButton.duration;
 		addedButton.colors = tempColor;
 		
+		//if the button is using some sprites, then switch the transitons into the swap type. otherwise, keep it with the color tint!
+		if (originalButton.hoverSprite != "" &&
+		    originalButton.pressedSprite != "" &&
+		    originalButton.disabledSprite != ""){
+			//addedButton.transition = Selectable.Transition.SpriteSwap;
+			addedButton.transition = Selectable.Transition.ColorTint;
+		}else{
+			addedButton.transition = Selectable.Transition.ColorTint;
+		}
+
 		//set the type of the sprite (with a button it will be usually sliced)
 		if (originalSprite.type == UIBasicSprite.Type.Simple){
 			addedImage.type = Image.Type.Simple;
