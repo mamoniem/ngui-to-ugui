@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -196,6 +197,89 @@ public class ConverterMenu : MonoBehaviour {
 		}
 		importer.spritesheet = theSheet;
 		AssetDatabase.ImportAsset(conversionPath, ImportAssetOptions.ForceUpdate);
+	}
+
+
+
+
+
+
+
+	[MenuItem ("nGUI TO uGUI/Wedgit Convert/Selected")]
+	static void OnConvertWedgitSelected () {
+		GameObject tempObject;
+		if (Selection.activeGameObject != null){
+			foreach(GameObject selectedObject in Selection.gameObjects){
+				if (selectedObject.GetComponent<UIButton>() && selectedObject.GetComponent<UISprite>()){
+
+					UIAtlas tempNguiAtlas;
+					tempNguiAtlas = selectedObject.GetComponent<UISprite>().atlas;
+					if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+						Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+					}else{
+						ConvertAtlas(tempNguiAtlas);
+					}
+
+					tempObject = (GameObject) Instantiate (selectedObject.gameObject, selectedObject.transform.position, selectedObject.transform.rotation);
+					tempObject.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+					tempObject.name = selectedObject.name;
+					tempObject.transform.position = selectedObject.transform.position;
+
+					Image addedImage;
+					Button addedButton;
+					UISprite originalSprite;
+					UIButton originalButton;
+					
+					addedImage = tempObject.AddComponent<Image>();
+					addedButton = tempObject.AddComponent<Button>();
+					originalSprite = selectedObject.GetComponent<UISprite>();
+					originalButton = selectedObject.GetComponent<UIButton>();
+
+					tempObject.GetComponent<RectTransform>().sizeDelta = originalSprite.localSize;
+
+					tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+
+					Sprite[] sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/CONVERSION_DATA/" + originalSprite.atlas.name + ".png").OfType<Sprite>().ToArray();
+					for (int c=0; c<sprites.Length; c++){
+						if (sprites[c].name == originalSprite.spriteName){
+							addedImage.sprite = sprites[c];
+
+						}
+					}
+
+					addedImage.color = originalSprite.color;
+
+					if (originalSprite.type == UIBasicSprite.Type.Simple){
+						addedImage.type = Image.Type.Simple;
+					}else if (originalSprite.type == UIBasicSprite.Type.Sliced){
+						addedImage.type = Image.Type.Sliced;
+					}else if (originalSprite.type == UIBasicSprite.Type.Tiled){
+						addedImage.type = Image.Type.Tiled;
+					}else if (originalSprite.type == UIBasicSprite.Type.Filled){
+						addedImage.type = Image.Type.Filled;
+					}
+
+					DestroyImmediate (tempObject.GetComponent<UISprite>());
+					DestroyImmediate (tempObject.GetComponent<UIButton>());
+					if (tempObject.GetComponent<Collider>()){
+						DestroyImmediate (tempObject.GetComponent<Collider>());
+					}
+
+					UILabel[] textOnChilds = tempObject.GetComponentsInChildren <UILabel>();
+					for (int v=0; v<textOnChilds.Length; v++){
+						Text tempText = textOnChilds[v].gameObject.AddComponent<Text>();
+						tempText.text = textOnChilds[v].text;
+						tempText.color = textOnChilds[v].color;
+						tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+"FONT.otf", typeof(Font));
+						
+						
+					}
+				}
+
+			}
+		}else{
+			Debug.LogError ("<Color=red>NO NGUI-Wedgits SELECTED</Color>, <Color=yellow>Please select at least one wedgit to convert</Color>");
+		}
 	}
 
 }
