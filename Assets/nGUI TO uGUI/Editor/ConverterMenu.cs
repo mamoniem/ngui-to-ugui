@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class ConverterMenu : MonoBehaviour {
 	/*
@@ -201,79 +203,15 @@ public class ConverterMenu : MonoBehaviour {
 
 
 
-
-
-
-
 	[MenuItem ("nGUI TO uGUI/Wedgit Convert/Selected")]
 	static void OnConvertWedgitSelected () {
-		GameObject tempObject;
 		if (Selection.activeGameObject != null){
 			foreach(GameObject selectedObject in Selection.gameObjects){
 				if (selectedObject.GetComponent<UIButton>() && selectedObject.GetComponent<UISprite>()){
-
-					UIAtlas tempNguiAtlas;
-					tempNguiAtlas = selectedObject.GetComponent<UISprite>().atlas;
-					if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
-						Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
-					}else{
-						ConvertAtlas(tempNguiAtlas);
-					}
-
-					tempObject = (GameObject) Instantiate (selectedObject.gameObject, selectedObject.transform.position, selectedObject.transform.rotation);
-					tempObject.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
-					tempObject.name = selectedObject.name;
-					tempObject.transform.position = selectedObject.transform.position;
-
-					Image addedImage;
-					Button addedButton;
-					UISprite originalSprite;
-					UIButton originalButton;
-					
-					addedImage = tempObject.AddComponent<Image>();
-					addedButton = tempObject.AddComponent<Button>();
-					originalSprite = selectedObject.GetComponent<UISprite>();
-					originalButton = selectedObject.GetComponent<UIButton>();
-
-					tempObject.GetComponent<RectTransform>().sizeDelta = originalSprite.localSize;
-
-					tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
-
-					Sprite[] sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/CONVERSION_DATA/" + originalSprite.atlas.name + ".png").OfType<Sprite>().ToArray();
-					for (int c=0; c<sprites.Length; c++){
-						if (sprites[c].name == originalSprite.spriteName){
-							addedImage.sprite = sprites[c];
-
-						}
-					}
-
-					addedImage.color = originalSprite.color;
-
-					if (originalSprite.type == UIBasicSprite.Type.Simple){
-						addedImage.type = Image.Type.Simple;
-					}else if (originalSprite.type == UIBasicSprite.Type.Sliced){
-						addedImage.type = Image.Type.Sliced;
-					}else if (originalSprite.type == UIBasicSprite.Type.Tiled){
-						addedImage.type = Image.Type.Tiled;
-					}else if (originalSprite.type == UIBasicSprite.Type.Filled){
-						addedImage.type = Image.Type.Filled;
-					}
-
-					DestroyImmediate (tempObject.GetComponent<UISprite>());
-					DestroyImmediate (tempObject.GetComponent<UIButton>());
-					if (tempObject.GetComponent<Collider>()){
-						DestroyImmediate (tempObject.GetComponent<Collider>());
-					}
-
-					UILabel[] textOnChilds = tempObject.GetComponentsInChildren <UILabel>();
-					for (int v=0; v<textOnChilds.Length; v++){
-						Text tempText = textOnChilds[v].gameObject.AddComponent<Text>();
-						tempText.text = textOnChilds[v].text;
-						tempText.color = textOnChilds[v].color;
-						tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+"FONT.otf", typeof(Font));
-						
-						
-					}
+					OnConvertUIButton (selectedObject);
+				}
+				if (selectedObject.GetComponent<UILabel>()){
+					OnConvertUILabel (selectedObject, false);
 				}
 
 			}
@@ -282,4 +220,208 @@ public class ConverterMenu : MonoBehaviour {
 		}
 	}
 
+
+	static void OnConvertUILabel(GameObject theHolderObject, bool subConvert){
+		GameObject tempObject;
+		Text tempText;
+		if (subConvert == false){
+			tempObject = (GameObject) Instantiate (theHolderObject.gameObject, theHolderObject.transform.position, theHolderObject.transform.rotation);
+			tempObject.layer = LayerMask.NameToLayer ("UI");
+			if (GameObject.FindObjectOfType<Canvas>()){
+				tempObject.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+			}else{
+				Debug.LogError ("<Color=red>The is no CANVAS in the scene</Color>, <Color=yellow>Please Add a canvas and adjust it</Color>");
+				DestroyImmediate (tempObject.gameObject);
+				return;
+			}
+			tempText = tempObject.AddComponent<Text>();
+			tempObject.name = theHolderObject.name;
+			//to adjust the text issue
+			if (tempObject.GetComponent <UILabel>().overflowMethod == UILabel.Overflow.ResizeHeight){
+				tempObject.GetComponent<RectTransform>().pivot = new Vector2(tempObject.GetComponent<RectTransform>().pivot.x, 1.0f);
+			}
+			tempObject.transform.position = theHolderObject.transform.position;
+			tempObject.GetComponent<RectTransform>().sizeDelta = tempObject.GetComponent<UILabel>().localSize;
+			tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+		}else{
+			tempObject = theHolderObject;
+			tempText = tempObject.gameObject.AddComponent<Text>();
+		}
+
+		UILabel originalText = tempObject.GetComponent <UILabel>();
+		//tempText = originalText.gameObject.AddComponent<Text>();
+		tempText.text = originalText.text;
+		tempText.color = originalText.color;
+		tempText.gameObject.GetComponent<RectTransform>().sizeDelta = originalText.localSize;
+		tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+"FONT.ttf", typeof(Font));
+		tempText.fontSize = originalText.fontSize;
+		if (originalText.spacingY != 0){
+			tempText.lineSpacing = originalText.spacingY;
+		}
+		
+		if (originalText.alignment == NGUIText.Alignment.Automatic){
+			tempText.alignment = TextAnchor.MiddleCenter;
+		}else if (originalText.alignment == NGUIText.Alignment.Center){
+			tempText.alignment = TextAnchor.MiddleCenter;
+		}else if (originalText.alignment == NGUIText.Alignment.Justified){
+			tempText.alignment = TextAnchor.MiddleLeft;
+		}else if (originalText.alignment == NGUIText.Alignment.Left){
+			tempText.alignment = TextAnchor.UpperLeft;
+		}else if (originalText.alignment == NGUIText.Alignment.Right){
+			tempText.alignment = TextAnchor.UpperRight;
+		}
+
+
+		
+		if (tempObject.GetComponent<Collider>()){
+			DestroyImmediate(tempObject.GetComponent<Collider>());
+		}
+		DestroyImmediate (originalText);
+	}
+
+	static void OnConvertUIButton(GameObject selectedObject){
+		GameObject tempObject;
+		UIAtlas tempNguiAtlas;
+		tempNguiAtlas = selectedObject.GetComponent<UISprite>().atlas;
+		if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+			Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+		}else{
+			ConvertAtlas(tempNguiAtlas);
+		}
+		
+		tempObject = (GameObject) Instantiate (selectedObject.gameObject, selectedObject.transform.position, selectedObject.transform.rotation);
+		tempObject.layer = LayerMask.NameToLayer ("UI");
+		if (GameObject.FindObjectOfType<Canvas>()){
+			tempObject.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+		}else{
+			Debug.LogError ("<Color=red>The is no CANVAS in the scene</Color>, <Color=yellow>Please Add a canvas and adjust it</Color>");
+			DestroyImmediate (tempObject.gameObject);
+			return;
+		}
+		tempObject.name = selectedObject.name;
+		tempObject.transform.position = selectedObject.transform.position;
+		
+		//to easliy control the old and the new sprites and buttons
+		Image addedImage;
+		Button addedButton;
+		UISprite originalSprite;
+		UIButton originalButton;
+		
+		//define the objects of the previous variables
+		addedImage = tempObject.AddComponent<Image>();
+		addedButton = tempObject.AddComponent<Button>();
+		originalSprite = selectedObject.GetComponent<UISprite>();
+		originalButton = selectedObject.GetComponent<UIButton>();
+		
+		//adjust the rect transform to fit the original one's size
+		tempObject.GetComponent<RectTransform>().sizeDelta = originalSprite.localSize;
+		tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+		
+		Sprite[] sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/CONVERSION_DATA/" + originalSprite.atlas.name + ".png").OfType<Sprite>().ToArray();
+		SpriteState tempState = addedButton.spriteState;
+		for (int c=0; c<sprites.Length; c++){
+			if (sprites[c].name == originalSprite.spriteName){
+				addedImage.sprite = sprites[c];
+			}
+			//Apply the sprite swap option, just in case the user have it.
+			// Used several If statement, just in case a user using the same sprite to define more than one state
+			if (sprites[c].name == originalButton.hoverSprite){
+				tempState.highlightedSprite = sprites[c];
+			}
+			if (sprites[c].name == originalButton.pressedSprite){
+				tempState.pressedSprite = sprites[c];
+			}
+			if (sprites[c].name == originalButton.disabledSprite){
+				tempState.disabledSprite = sprites[c];
+			}
+			addedButton.spriteState = tempState;
+		}
+
+		//the actions code
+		//UnityAction tempActionHolder = (UnityAction)originalButton.onClick[0];
+		//addedButton.onClick.AddListener (() => originalButton.onClick[0].target.SendMessage(originalButton.onClick[0].methodName));
+		//addedButton.onClick.AddListener (() => originalButton.onClick[0].target.gameObject.SendMessage( originalButton.onClick[0].methodName ));
+		//Debug.Log((originalButton.onClick[0].ToString())+"."+originalButton.onClick[0].methodName.ToString());
+
+		//if the button is using some sprites, then switch the transitons into the swap type. otherwise, keep it with the color tint!
+		if (originalButton.hoverSprite != "" &&
+		    originalButton.pressedSprite != "" &&
+		    originalButton.disabledSprite != ""){
+			addedButton.transition = Selectable.Transition.SpriteSwap;
+		}else{
+			addedButton.transition = Selectable.Transition.ColorTint;
+		}
+		
+		// set the image sprite color
+		addedImage.color = Color.white;
+		
+		//set the button colors and the fade duration
+		ColorBlock tempColor = addedButton.colors;
+		tempColor.normalColor = originalSprite.color;
+		tempColor.highlightedColor = originalButton.hover;
+		tempColor.pressedColor = originalButton.pressed;
+		tempColor.disabledColor = originalButton.disabledColor;
+		tempColor.fadeDuration = originalButton.duration;
+		addedButton.colors = tempColor;
+		
+		//set the type of the sprite (with a button it will be usually sliced)
+		if (originalSprite.type == UIBasicSprite.Type.Simple){
+			addedImage.type = Image.Type.Simple;
+		}else if (originalSprite.type == UIBasicSprite.Type.Sliced){
+			addedImage.type = Image.Type.Sliced;
+		}else if (originalSprite.type == UIBasicSprite.Type.Tiled){
+			addedImage.type = Image.Type.Tiled;
+		}else if (originalSprite.type == UIBasicSprite.Type.Filled){
+			addedImage.type = Image.Type.Filled;
+		}
+		
+		//remcoe the 2 nGUI components from the newly created duplicate
+		DestroyImmediate (tempObject.GetComponent<UISprite>());
+		DestroyImmediate (tempObject.GetComponent<UIButton>());
+		if (tempObject.GetComponent<Collider>()){
+			DestroyImmediate (tempObject.GetComponent<Collider>());
+		}
+		
+		//do the calls to change the childerns
+		//CheckChildUILabels(tempObject);
+
+		UILabel[] textOnChilds = tempObject.GetComponentsInChildren <UILabel>();
+		for (int v=0; v<textOnChilds.Length; v++){
+			OnConvertUILabel(textOnChilds[v].gameObject, true);
+		}
+	}
+
+	//check any UILabel in a child and change it
+	static void CheckChildUILabels(GameObject theParentObject){
+
+		/*
+		UILabel[] textOnChilds = theParentObject.GetComponentsInChildren <UILabel>();
+		for (int v=0; v<textOnChilds.Length; v++){
+			Text tempText = textOnChilds[v].gameObject.AddComponent<Text>();
+			tempText.text = textOnChilds[v].text;
+			tempText.color = textOnChilds[v].color;
+			tempText.gameObject.GetComponent<RectTransform>().sizeDelta = textOnChilds[v].localSize;
+			tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+"FONT.ttf", typeof(Font));
+			tempText.fontSize = textOnChilds[v].fontSize;
+			tempText.lineSpacing = textOnChilds[v].spacingY;
+			
+			if (textOnChilds[v].alignment == NGUIText.Alignment.Automatic){
+				tempText.alignment = TextAnchor.MiddleCenter;
+			}else if (textOnChilds[v].alignment == NGUIText.Alignment.Center){
+				tempText.alignment = TextAnchor.MiddleCenter;
+			}else if (textOnChilds[v].alignment == NGUIText.Alignment.Justified){
+				tempText.alignment = TextAnchor.MiddleLeft;
+			}else if (textOnChilds[v].alignment == NGUIText.Alignment.Left){
+				tempText.alignment = TextAnchor.MiddleLeft;
+			}else if (textOnChilds[v].alignment == NGUIText.Alignment.Right){
+				tempText.alignment = TextAnchor.MiddleRight;
+			}
+			
+			DestroyImmediate (textOnChilds[v]);
+			
+		}*/
+	}
+
 }
+
+// when everything done, the canvas needs to be UnParented, and have the scale of 1, and finally moved to Zero to be viewed by the camera.
