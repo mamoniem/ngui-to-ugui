@@ -8,7 +8,7 @@ public class uUIToggle : MonoBehaviour {
 	public bool StateOfNone;
 	public bool startingState;
 
-	public Image m_Sprite;
+	public Sprite m_Sprite;
 	public Animation m_Animation;
 
 	// Use this for initialization

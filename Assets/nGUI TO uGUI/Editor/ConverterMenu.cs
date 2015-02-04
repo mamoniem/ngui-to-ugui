@@ -135,13 +135,17 @@ public class ConverterMenu : MonoBehaviour {
 					OnConvertUIToggle (inProgressObject, false);
 				}
 
-				//OnCleanConvertedItem(inProgressObject);
+				if (selectedObject.GetComponent<UIInput>()){
+					inProgressObject.name = selectedObject.name;
+					OnConvertUIInput (inProgressObject, false);
+				}
 
 				UIWidget[] UIWidgetsOnChilderens = inProgressObject.GetComponentsInChildren<UIWidget>();
 				UISprite[] UISpritesOnChilderens = inProgressObject.GetComponentsInChildren<UISprite>();
 				UILabel[] UILablesOnChilderens = inProgressObject.GetComponentsInChildren<UILabel>();
 				UIButton[] UIButtonsOnChilderens = inProgressObject.GetComponentsInChildren<UIButton>();
 				UIToggle[] UITogglesOnChilderens = inProgressObject.GetComponentsInChildren<UIToggle>();
+				UIInput[] UIInputsOnChilderens = inProgressObject.GetComponentsInChildren<UIInput>();
 
 				for (int a=0; a<UIWidgetsOnChilderens.Length; a++){
 					OnConvertUIWidget (UIWidgetsOnChilderens[a].gameObject, true);
@@ -161,6 +165,10 @@ public class ConverterMenu : MonoBehaviour {
 
 				for (int e=0; e<UITogglesOnChilderens.Length; e++){
 					OnConvertUIToggle (UITogglesOnChilderens[e].gameObject, true);
+				}
+
+				for (int f=0; f<UIInputsOnChilderens.Length; f++){
+					OnConvertUIInput (UIInputsOnChilderens[f].gameObject, true);
 				}
 
 				OnCleanConvertedItem(GameObject.FindObjectOfType<Canvas>().gameObject);
@@ -195,6 +203,7 @@ public class ConverterMenu : MonoBehaviour {
 
 		addedRectT = tempObject.AddComponent<RectTransform>();
 
+		tempObject.GetComponent<RectTransform>().pivot = tempObject.GetComponent<UIWidget>().pivotOffset;
 		tempObject.GetComponent<RectTransform>().sizeDelta = tempObject.GetComponent<UIWidget>().localSize;
 		tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 	}
@@ -239,6 +248,7 @@ public class ConverterMenu : MonoBehaviour {
 		originalSprite = selectedObject.GetComponent<UISprite>();
 
 		//adjust the rect transform to fit the original one's size
+		tempObject.GetComponent<RectTransform>().pivot = originalSprite.pivotOffset;
 		tempObject.GetComponent<RectTransform>().sizeDelta = originalSprite.localSize;
 		tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 		
@@ -293,32 +303,39 @@ public class ConverterMenu : MonoBehaviour {
 		if (tempObject.GetComponent <UILabel>().overflowMethod == UILabel.Overflow.ResizeHeight){
 			tempObject.GetComponent<RectTransform>().pivot = new Vector2(tempObject.GetComponent<RectTransform>().pivot.x, 1.0f);
 		}
+		//tempObject.GetComponent<RectTransform>().pivot = tempObject.GetComponent<UILabel>().pivotOffset;
 		tempObject.transform.position = selectedObject.transform.position;
 		tempObject.GetComponent<RectTransform>().sizeDelta = tempObject.GetComponent<UILabel>().localSize;
 		tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
 
 		UILabel originalText = tempObject.GetComponent <UILabel>();
-		//tempText = originalText.gameObject.AddComponent<Text>();
-		tempText.text = originalText.text;
-		tempText.color = originalText.color;
-		tempText.gameObject.GetComponent<RectTransform>().sizeDelta = originalText.localSize;
-		tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+"FONT.ttf", typeof(Font));
-		tempText.fontSize = originalText.fontSize;
-		if (originalText.spacingY != 0){
-			tempText.lineSpacing = originalText.spacingY;
-		}
-		
-		if (originalText.alignment == NGUIText.Alignment.Automatic){
-			tempText.alignment = TextAnchor.MiddleCenter;
-		}else if (originalText.alignment == NGUIText.Alignment.Center){
-			tempText.alignment = TextAnchor.MiddleCenter;
-		}else if (originalText.alignment == NGUIText.Alignment.Justified){
-			tempText.alignment = TextAnchor.MiddleLeft;
-		}else if (originalText.alignment == NGUIText.Alignment.Left){
-			tempText.alignment = TextAnchor.UpperLeft;
-		}else if (originalText.alignment == NGUIText.Alignment.Right){
-			tempText.alignment = TextAnchor.UpperRight;
+		if (tempText != null){
+			//tempText = originalText.gameObject.AddComponent<Text>();
+			tempText.text = originalText.text;
+			tempText.color = originalText.color;
+			tempText.gameObject.GetComponent<RectTransform>().sizeDelta = originalText.localSize;
+			tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+"FONT.ttf", typeof(Font));
+			tempText.fontSize = originalText.fontSize;
+			if (originalText.spacingY != 0){
+				tempText.lineSpacing = originalText.spacingY;
+			}
+			
+			if (originalText.alignment == NGUIText.Alignment.Automatic){
+				if (originalText.gameObject.transform.parent.gameObject.GetComponent<UIButton>() || originalText.gameObject.transform.parent.gameObject.GetComponent<Button>()){
+					tempText.alignment = TextAnchor.MiddleCenter;
+				}else{
+					tempText.alignment = TextAnchor.MiddleLeft;
+				}
+			}else if (originalText.alignment == NGUIText.Alignment.Center){
+				tempText.alignment = TextAnchor.MiddleCenter;
+			}else if (originalText.alignment == NGUIText.Alignment.Justified){
+				tempText.alignment = TextAnchor.MiddleLeft;
+			}else if (originalText.alignment == NGUIText.Alignment.Left){
+				tempText.alignment = TextAnchor.UpperLeft;
+			}else if (originalText.alignment == NGUIText.Alignment.Right){
+				tempText.alignment = TextAnchor.UpperRight;
+			}
 		}
 
 	}
@@ -365,8 +382,10 @@ public class ConverterMenu : MonoBehaviour {
 		//adjust the rect transform to fit the original one's size..If it have no sprite, then it must had a widget
 		if (originalButton.GetComponent<UISprite>()){
 			tempObject.GetComponent<RectTransform>().sizeDelta = originalButton.GetComponent<UISprite>().localSize;
+			tempObject.GetComponent<RectTransform>().pivot = originalButton.GetComponent<UISprite>().pivotOffset;
 		}else{
 			tempObject.GetComponent<RectTransform>().sizeDelta = originalButton.GetComponent<UIWidget>().localSize;
+			tempObject.GetComponent<RectTransform>().pivot = originalButton.GetComponent<UIWidget>().pivotOffset;
 		}
 		tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -419,7 +438,125 @@ public class ConverterMenu : MonoBehaviour {
 
 	#region UIToggles Converter
 	static void OnConvertUIToggle (GameObject selectedObject, bool isSubConvert){
+		GameObject tempObject;
 
+		tempObject = selectedObject;
+
+		if (tempObject.GetComponent<uUIToggle>()){
+			return;
+		}else{
+			tempObject.layer = LayerMask.NameToLayer ("UI");
+			if (!isSubConvert){
+				if (GameObject.FindObjectOfType<Canvas>()){
+					tempObject.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+				}else{
+					Debug.LogError ("<Color=red>The is no CANVAS in the scene</Color>, <Color=yellow>Please Add a canvas and adjust it</Color>");
+					DestroyImmediate (tempObject.gameObject);
+					return;
+				}
+			}
+			
+			tempObject.name = selectedObject.name;
+			tempObject.transform.position = selectedObject.transform.position;
+			
+			Toggle addedToggle;
+			uUIToggle addedToggleController;
+			
+			addedToggle = tempObject.AddComponent<Toggle>();
+			addedToggleController = tempObject.AddComponent<uUIToggle>();
+
+			tempObject.GetComponent<RectTransform>().pivot = tempObject.GetComponent<UIWidget>().pivotOffset;
+			tempObject.GetComponent<RectTransform>().sizeDelta = tempObject.GetComponent<UIWidget>().localSize;
+			tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+
+
+			//addedToggle
+
+			addedToggleController.Group = tempObject.GetComponent<UIToggle>().group;
+			addedToggleController.StateOfNone = tempObject.GetComponent<UIToggle>().optionCanBeNone;
+			addedToggleController.startingState = tempObject.GetComponent<UIToggle>().startsActive;
+
+			UISprite[] childImages;
+			childImages = tempObject.GetComponentsInChildren<UISprite>(); //not using <Image>() because the child have not been converted yet
+			for (int x=0; x< childImages.Length; x++){
+				if (childImages[x].spriteName == tempObject.GetComponent<UIToggle>().activeSprite.gameObject.GetComponent<UISprite>().spriteName){
+					Sprite[] sprites;
+					sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/CONVERSION_DATA/" + childImages[x].atlas.name + ".png").OfType<Sprite>().ToArray();
+					for (int c=0; c<sprites.Length; c++){
+						if (sprites[c].name == childImages[x].spriteName){
+							addedToggleController.m_Sprite = sprites[c];
+						}
+					}
+				}
+			}
+			addedToggleController.m_Animation = tempObject.GetComponent<UIToggle>().activeAnimation;
+		}
+	}
+	#endregion
+
+	#region UIInput Converter
+	static void OnConvertUIInput (GameObject selectedObject, bool isSubConvert){
+		GameObject tempObject;
+		InputField newInputField;
+		tempObject = selectedObject;
+
+		if (tempObject.GetComponent<InputField>()){
+
+		}else{
+			tempObject.layer = LayerMask.NameToLayer ("UI");
+			
+			if (!isSubConvert){
+				if (GameObject.FindObjectOfType<Canvas>()){
+					tempObject.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+				}else{
+					Debug.LogError ("<Color=red>The is no CANVAS in the scene</Color>, <Color=yellow>Please Add a canvas and adjust it</Color>");
+					DestroyImmediate (tempObject.gameObject);
+					return;
+				}
+			}
+			
+			newInputField = tempObject.AddComponent<InputField>();
+			//tempObject.name = selectedObject.name;
+			
+			//tempObject.GetComponent<RectTransform>().pivot = tempObject.GetComponent<UILabel>().pivotOffset;
+			tempObject.transform.position = selectedObject.transform.position;
+			tempObject.GetComponent<RectTransform>().sizeDelta = tempObject.GetComponent<UIWidget>().localSize;
+			tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+			
+			ColorBlock tempColor = newInputField.colors;
+			tempColor.normalColor = tempObject.GetComponent<UIInput>().activeTextColor;
+			tempColor.pressedColor = tempObject.GetComponent<UIInput>().caretColor;
+			tempColor.highlightedColor = tempObject.GetComponent<UIInput>().selectionColor;
+			//mising the disabled/inactive
+			newInputField.colors = tempColor;
+			
+			newInputField.text = tempObject.GetComponent<UIInput>().value;
+			newInputField.characterLimit = tempObject.GetComponent<UIInput>().characterLimit;
+			newInputField.textComponent = newInputField.gameObject.GetComponentInChildren<Text>();
+			
+			if (tempObject.GetComponent<UIInput>().inputType == UIInput.InputType.Standard){
+				newInputField.contentType = InputField.ContentType.Standard;
+			}else if (tempObject.GetComponent<UIInput>().inputType == UIInput.InputType.AutoCorrect){
+				newInputField.contentType = InputField.ContentType.Autocorrected;
+			}else if (tempObject.GetComponent<UIInput>().inputType == UIInput.InputType.Password){
+				newInputField.contentType = InputField.ContentType.Password;
+			}else if (tempObject.GetComponent<UIInput>().validation == UIInput.Validation.Integer){
+				newInputField.contentType = InputField.ContentType.IntegerNumber;
+			}else if (tempObject.GetComponent<UIInput>().validation == UIInput.Validation.Float){
+				newInputField.contentType = InputField.ContentType.DecimalNumber;
+			}else if (tempObject.GetComponent<UIInput>().validation == UIInput.Validation.Alphanumeric){
+				newInputField.contentType = InputField.ContentType.Alphanumeric;
+			}else if (tempObject.GetComponent<UIInput>().validation == UIInput.Validation.Username){
+				newInputField.contentType = InputField.ContentType.EmailAddress;
+			}else if (tempObject.GetComponent<UIInput>().validation == UIInput.Validation.Name){
+				newInputField.contentType = InputField.ContentType.Name;	
+			}else if (tempObject.GetComponent<UIInput>().validation == UIInput.Validation.None){
+				newInputField.contentType = InputField.ContentType.Custom;
+			}
+			
+			Debug.Log ("UIInput have been done !!!!");
+			//newInputField.colors
+		}
 	}
 	#endregion
 
@@ -431,6 +568,7 @@ public class ConverterMenu : MonoBehaviour {
 		UILabel[] UILablesOnChilderens = selectedObject.GetComponentsInChildren<UILabel>();
 		UIButton[] UIButtonsOnChilderens = selectedObject.GetComponentsInChildren<UIButton>();
 		UIToggle[] UITogglesOnChilderens = selectedObject.GetComponentsInChildren<UIToggle>();
+		UIInput[] UIInputsOnChilderens = selectedObject.GetComponentsInChildren<UIInput>();
 
 		Collider[] CollidersOnChilderens = selectedObject.GetComponentsInChildren<Collider>();
 
@@ -461,6 +599,12 @@ public class ConverterMenu : MonoBehaviour {
 		for (int e=0; e<UITogglesOnChilderens.Length; e++){
 			if(UITogglesOnChilderens[e]){
 				DestroyImmediate (UITogglesOnChilderens[e]);
+			}
+		}
+
+		for (int f=0; f<UIInputsOnChilderens.Length; f++){
+			if (UIInputsOnChilderens[f]){
+				DestroyImmediate (UIInputsOnChilderens[f]);
 			}
 		}
 

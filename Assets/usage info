@@ -21,3 +21,4 @@ Limitations:
 - any custom wedgits will not be used
 - it should run with the latest ngui ( or earlier version that have no major API changes)
 - BBCode on the Text is not going to work
+- the UILabels which set to Automatic, it's result is not expected.
