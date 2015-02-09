@@ -1,12 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/nGUI TO uGUI/Editor/ConverterMenu.cs">
     <Files>
-      <File FileName="Assets/nGUI TO uGUI/Editor/ConverterMenu.cs" Line="454" Column="5" />
+      <File FileName="Assets/nGUI TO uGUI/Scripts/uUIGetScrollPercentageValue.cs" Line="18" Column="3" />
+      <File FileName="Assets/nGUI TO uGUI/Editor/ConverterMenu.cs" Line="740" Column="4" />
+      <File FileName="Assets/nGUI TO uGUI/Scripts/uUIGetSliderPercentageValue.cs" Line="17" Column="40" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/muhammad/Work/Tools/nGUI to uGUI/Assets/nGUI TO uGUI/Editor/ConverterMenu.cs" line="475" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

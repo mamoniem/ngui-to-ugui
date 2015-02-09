@@ -140,6 +140,12 @@ public class ConverterMenu : MonoBehaviour {
 					OnConvertUIScrollBar (inProgressObject, false);
 				}
 
+				if (selectedObject.GetComponent<UISlider>()){
+					inProgressObject.name = selectedObject.name;
+					OnConvertUISlider (inProgressObject, false);
+				}
+
+
 				if (selectedObject.GetComponent<UIButton>()){
 					inProgressObject.name = selectedObject.name;
 					OnConvertUIButton (inProgressObject, false);
@@ -152,6 +158,7 @@ public class ConverterMenu : MonoBehaviour {
 				UIToggle[] UITogglesOnChilderens = inProgressObject.GetComponentsInChildren<UIToggle>();
 				UIInput[] UIInputsOnChilderens = inProgressObject.GetComponentsInChildren<UIInput>();
 				UIScrollBar[] UIScrollBarsOnChilderens = inProgressObject.GetComponentsInChildren<UIScrollBar>();
+				UISlider[] UISlidersOnChilderens = inProgressObject.GetComponentsInChildren<UISlider>();
 
 				for (int a=0; a<UIWidgetsOnChilderens.Length; a++){
 					OnConvertUIWidget (UIWidgetsOnChilderens[a].gameObject, true);
@@ -178,6 +185,9 @@ public class ConverterMenu : MonoBehaviour {
 				}
 				for (int g=0; g<UIScrollBarsOnChilderens.Length; g++){
 					OnConvertUIScrollBar (UIScrollBarsOnChilderens[g].gameObject, true);
+				}
+				for (int h=0; h<UISlidersOnChilderens.Length; h++){
+					OnConvertUISlider (UISlidersOnChilderens[h].gameObject, true);
 				}
 
 				OnCleanConvertedItem(GameObject.FindObjectOfType<Canvas>().gameObject);
@@ -325,7 +335,7 @@ public class ConverterMenu : MonoBehaviour {
 			tempText.color = originalText.color;
 			tempText.gameObject.GetComponent<RectTransform>().sizeDelta = originalText.localSize;
 			tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+"FONT.ttf", typeof(Font));
-			tempText.fontSize = originalText.fontSize;
+			tempText.fontSize = originalText.fontSize-4;
 			if (originalText.spacingY != 0){
 				tempText.lineSpacing = originalText.spacingY;
 			}
@@ -453,12 +463,25 @@ public class ConverterMenu : MonoBehaviour {
 				}
 			}
 
-			//check if the parent was converted into a slider
+			//check if the parent was converted into a scrollbar
 			if (tempObject.transform.GetComponentInParent<Scrollbar>()){
 				tempObject.transform.GetComponentInParent<Scrollbar>().handleRect = tempObject.GetComponent<RectTransform>();
 				tempObject.GetComponent<RectTransform>().sizeDelta = new Vector2(tempObject.GetComponent<UISprite>().rightAnchor.absolute*2
 				                                                                 ,tempObject.GetComponent<UISprite>().topAnchor.absolute*2);
 			}
+			//check if the parent was converted into a slider
+
+			if (tempObject.transform.GetComponentInParent<Slider>()){
+				tempObject.transform.GetComponentInParent<Slider>().handleRect = tempObject.GetComponent<RectTransform>();
+				tempObject.GetComponent<RectTransform>().sizeDelta = new Vector2(Mathf.Abs(tempObject.GetComponent<UISprite>().localSize.x)
+				                                                                 ,Mathf.Abs(tempObject.GetComponent<UISprite>().topAnchor.absolute*2));
+				/*
+				Vector3 temppPos = tempObject.GetComponent<RectTransform>().localPosition;
+				temppPos.x = 5;
+				tempObject.GetComponent<RectTransform>().localPosition = temppPos;
+				*/
+			}
+
 		}
 	}
 	#endregion
@@ -637,9 +660,94 @@ public class ConverterMenu : MonoBehaviour {
 			}else if(oldScrollbar.fillDirection == UIProgressBar.FillDirection.TopToBottom){
 				newScrollbar.direction = Scrollbar.Direction.TopToBottom;
 			}
+
+			for (int x=0; x<selectedObject.GetComponent<UIScrollBar>().onChange.Capacity; x++){
+				if (selectedObject.GetComponent<UIScrollBar>().onChange[x].methodName == "SetCurrentPercent"){
+					//Debug.Log ("<Color=blue> HERE </Color>");
+					selectedObject.GetComponentInChildren<UILabel>().gameObject.AddComponent<uUIGetScrollPercentageValue>();
+					selectedObject.GetComponentInChildren<uUIGetScrollPercentageValue>().scrollBarObject = selectedObject.GetComponent<Scrollbar>();
+				}
+			}
+
+		}
+	}
+	#endregion
+
+	#region UISlider Converter
+	static void OnConvertUISlider (GameObject selectedObject, bool isSubConvert){
+		GameObject tempObject;
+		Slider newSlider;
+		tempObject = selectedObject;
+		
+		if (tempObject.GetComponent<Slider>()){
 			
-			Debug.Log ("UIInput have been done !!!!");
-			//newInputField.colors
+		}else{
+			tempObject.layer = LayerMask.NameToLayer ("UI");
+			
+			if (!isSubConvert){
+				if (GameObject.FindObjectOfType<Canvas>()){
+					tempObject.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+				}else{
+					Debug.LogError ("<Color=red>The is no CANVAS in the scene</Color>, <Color=yellow>Please Add a canvas and adjust it</Color>");
+					DestroyImmediate (tempObject.gameObject);
+					return;
+				}
+			}
+			
+			newSlider = tempObject.AddComponent<Slider>();
+			//tempObject.name = selectedObject.name;
+			
+			if (tempObject.GetComponent<UIButton>()){
+				DestroyImmediate (tempObject.GetComponent<UIButton>());
+			}
+			//tempObject.GetComponent<RectTransform>().pivot = tempObject.GetComponent<UILabel>().pivotOffset;
+			tempObject.transform.position = selectedObject.transform.position;
+			tempObject.GetComponent<RectTransform>().sizeDelta = tempObject.GetComponent<UIWidget>().localSize;
+			tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+			
+			UISlider oldSlider = selectedObject.GetComponent<UISlider>();
+
+			//witht the fact of the ngui limitations of 0:1
+			newSlider.minValue = 0;
+			newSlider.maxValue = 1;
+
+			newSlider.value = oldSlider.value;
+
+			if(oldSlider.fillDirection == UIProgressBar.FillDirection.BottomToTop){
+				newSlider.direction = Slider.Direction.BottomToTop;
+			}else if(oldSlider.fillDirection == UIProgressBar.FillDirection.LeftToRight){
+				newSlider.direction = Slider.Direction.LeftToRight;
+			}else if(oldSlider.fillDirection == UIProgressBar.FillDirection.RightToLeft){
+				newSlider.direction = Slider.Direction.RightToLeft;
+			}else if(oldSlider.fillDirection == UIProgressBar.FillDirection.TopToBottom){
+				newSlider.direction = Slider.Direction.TopToBottom;
+			}
+			
+			for (int x=0; x<tempObject.GetComponent<UISlider>().onChange.Capacity; x++){
+				if (tempObject.GetComponent<UISlider>().onChange[x].methodName == "SetCurrentPercent"){
+					//Debug.Log ("<Color=blue> HERE </Color>");
+					tempObject.GetComponentInChildren<UILabel>().gameObject.AddComponent<uUIGetSliderPercentageValue>();
+					tempObject.GetComponentInChildren<uUIGetSliderPercentageValue>().sliderObject = tempObject.GetComponent<Slider>();
+				}
+			}
+
+			GameObject theForgroundObject;
+			theForgroundObject = oldSlider.foregroundWidget.gameObject;
+			theForgroundObject.AddComponent<RectTransform>();
+			theForgroundObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
+			theForgroundObject.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
+			newSlider.fillRect = theForgroundObject.GetComponent<RectTransform>();
+
+
+			GameObject theThumb;
+			theThumb = oldSlider.thumb.gameObject;
+			float theTempPosition = oldSlider.thumb.gameObject.transform.position.x;
+			theThumb.gameObject.AddComponent<RectTransform>();
+			Vector3 tempPos = theThumb.gameObject.GetComponent<RectTransform>().localPosition;
+			tempPos.x *= 0;
+			theThumb.gameObject.GetComponent<RectTransform>().localPosition = tempPos;
+			newSlider.handleRect = theThumb.gameObject.GetComponent<RectTransform>();
+			
 		}
 	}
 	#endregion
@@ -654,6 +762,7 @@ public class ConverterMenu : MonoBehaviour {
 		UIToggle[] UITogglesOnChilderens = selectedObject.GetComponentsInChildren<UIToggle>();
 		UIInput[] UIInputsOnChilderens = selectedObject.GetComponentsInChildren<UIInput>();
 		UIScrollBar[] UIScrollBarsOnChilderens = selectedObject.GetComponentsInChildren<UIScrollBar>();
+		UISlider[] UISlidersOnChilderens = selectedObject.GetComponentsInChildren<UISlider>();
 
 		Collider[] CollidersOnChilderens = selectedObject.GetComponentsInChildren<Collider>();
 
@@ -699,11 +808,27 @@ public class ConverterMenu : MonoBehaviour {
 			}
 		}
 
+		for (int h=0; h<UISlidersOnChilderens.Length; h++){
+			if (UISlidersOnChilderens[h]){
+				DestroyImmediate (UISlidersOnChilderens[h]);
+			}
+		}
+
 		for (int z=0; z<CollidersOnChilderens.Length; z++){
 			if (CollidersOnChilderens[z]){
 				DestroyImmediate (CollidersOnChilderens[z]);
 			}
 		}
+
+
+		GameObject[] allTrash;
+		allTrash = GameObject.FindObjectsOfType<GameObject>();
+		for (int Z=0; Z<allTrash.Length; Z++){
+			if (allTrash[Z].gameObject.name.Contains("NGUI Snapshot") && allTrash[Z].gameObject.transform.GetComponentInParent<RectTransform>()){
+				DestroyImmediate (allTrash[Z].gameObject);
+			}
+		}
+		Debug.Log ("<Color=blue> Cleaned all the <Color=Red>NGUISnapshot</Color> Objects in the scene Hierarchy</Color>");
 
 
 	}
