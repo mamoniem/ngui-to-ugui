@@ -161,7 +161,9 @@ public class ConverterMenu : MonoBehaviour {
 				UISlider[] UISlidersOnChilderens = inProgressObject.GetComponentsInChildren<UISlider>();
 
 				for (int a=0; a<UIWidgetsOnChilderens.Length; a++){
-					OnConvertUIWidget (UIWidgetsOnChilderens[a].gameObject, true);
+					if (!UIWidgetsOnChilderens[a].gameObject.GetComponent<RectTransform>()){
+						OnConvertUIWidget (UIWidgetsOnChilderens[a].gameObject, true);
+					}
 				}
 
 				for (int b=0; b<UISpritesOnChilderens.Length; b++){
@@ -190,6 +192,7 @@ public class ConverterMenu : MonoBehaviour {
 					OnConvertUISlider (UISlidersOnChilderens[h].gameObject, true);
 				}
 
+				OnAdjustSliders(inProgressObject);
 				OnCleanConvertedItem(GameObject.FindObjectOfType<Canvas>().gameObject);
 			}
 		}else{
@@ -296,6 +299,15 @@ public class ConverterMenu : MonoBehaviour {
 		}else if (originalSprite.type == UIBasicSprite.Type.Filled){
 			addedImage.type = Image.Type.Filled;
 		}
+
+
+		//check if the parent was converted into a slider
+		/*if (tempObject.transform.GetComponentInParent<Slider>() && !tempObject.gameObject.GetComponent<Button>()){
+			Debug.Log("THE NAME :: "+ tempObject.name);
+			tempObject.transform.GetComponentInParent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2 (0, 0);
+			tempObject.transform.GetComponentInParent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().localPosition = new Vector3 (0, 0, 0);
+
+		}*/
 	}
 	#endregion
 
@@ -469,17 +481,17 @@ public class ConverterMenu : MonoBehaviour {
 				tempObject.GetComponent<RectTransform>().sizeDelta = new Vector2(tempObject.GetComponent<UISprite>().rightAnchor.absolute*2
 				                                                                 ,tempObject.GetComponent<UISprite>().topAnchor.absolute*2);
 			}
-			//check if the parent was converted into a slider
 
+			//check if the parent was converted into a slider
 			if (tempObject.transform.GetComponentInParent<Slider>()){
 				tempObject.transform.GetComponentInParent<Slider>().handleRect = tempObject.GetComponent<RectTransform>();
-				tempObject.GetComponent<RectTransform>().sizeDelta = new Vector2(Mathf.Abs(tempObject.GetComponent<UISprite>().localSize.x)
-				                                                                 ,Mathf.Abs(tempObject.GetComponent<UISprite>().topAnchor.absolute*2));
-				/*
-				Vector3 temppPos = tempObject.GetComponent<RectTransform>().localPosition;
-				temppPos.x = 5;
-				tempObject.GetComponent<RectTransform>().localPosition = temppPos;
-				*/
+				if (tempObject.transform.GetComponentInParent<Slider>().direction == Slider.Direction.LeftToRight ||  tempObject.transform.GetComponentInParent<Slider>().direction == Slider.Direction.RightToLeft){
+					tempObject.GetComponent<RectTransform>().sizeDelta = new Vector2(Mathf.Abs(tempObject.GetComponent<UISprite>().localSize.x)
+					                                                                 ,Mathf.Abs(tempObject.GetComponent<UISprite>().topAnchor.absolute*2));
+				}else{
+					tempObject.GetComponent<RectTransform>().sizeDelta = new Vector2(Mathf.Abs(tempObject.GetComponent<UISprite>().leftAnchor.absolute*2),
+					                                                                 Mathf.Abs(tempObject.GetComponent<UISprite>().localSize.y));
+				}
 			}
 
 		}
@@ -708,46 +720,67 @@ public class ConverterMenu : MonoBehaviour {
 			UISlider oldSlider = selectedObject.GetComponent<UISlider>();
 
 			//witht the fact of the ngui limitations of 0:1
-			newSlider.minValue = 0;
-			newSlider.maxValue = 1;
+			if (newSlider){
+				newSlider.minValue = 0;
+				newSlider.maxValue = 1;
+				newSlider.value = oldSlider.value;
 
-			newSlider.value = oldSlider.value;
+				if(oldSlider.fillDirection == UIProgressBar.FillDirection.BottomToTop){
+					newSlider.direction = Slider.Direction.BottomToTop;
+				}else if(oldSlider.fillDirection == UIProgressBar.FillDirection.LeftToRight){
+					newSlider.direction = Slider.Direction.LeftToRight;
+				}else if(oldSlider.fillDirection == UIProgressBar.FillDirection.RightToLeft){
+					newSlider.direction = Slider.Direction.RightToLeft;
+				}else if(oldSlider.fillDirection == UIProgressBar.FillDirection.TopToBottom){
+					newSlider.direction = Slider.Direction.TopToBottom;
+				}
 
-			if(oldSlider.fillDirection == UIProgressBar.FillDirection.BottomToTop){
-				newSlider.direction = Slider.Direction.BottomToTop;
-			}else if(oldSlider.fillDirection == UIProgressBar.FillDirection.LeftToRight){
-				newSlider.direction = Slider.Direction.LeftToRight;
-			}else if(oldSlider.fillDirection == UIProgressBar.FillDirection.RightToLeft){
-				newSlider.direction = Slider.Direction.RightToLeft;
-			}else if(oldSlider.fillDirection == UIProgressBar.FillDirection.TopToBottom){
-				newSlider.direction = Slider.Direction.TopToBottom;
-			}
-			
-			for (int x=0; x<tempObject.GetComponent<UISlider>().onChange.Capacity; x++){
-				if (tempObject.GetComponent<UISlider>().onChange[x].methodName == "SetCurrentPercent"){
-					//Debug.Log ("<Color=blue> HERE </Color>");
-					tempObject.GetComponentInChildren<UILabel>().gameObject.AddComponent<uUIGetSliderPercentageValue>();
-					tempObject.GetComponentInChildren<uUIGetSliderPercentageValue>().sliderObject = tempObject.GetComponent<Slider>();
+				for (int x=0; x<tempObject.GetComponent<UISlider>().onChange.Capacity; x++){
+					if (tempObject.GetComponent<UISlider>().onChange[x].methodName == "SetCurrentPercent"){
+						//Debug.Log ("<Color=blue> HERE </Color>");
+						tempObject.GetComponentInChildren<UILabel>().gameObject.AddComponent<uUIGetSliderPercentageValue>();
+						tempObject.GetComponentInChildren<uUIGetSliderPercentageValue>().sliderObject = tempObject.GetComponent<Slider>();
+					}
+				}
+				
+				GameObject theForgroundObject;
+				theForgroundObject = oldSlider.foregroundWidget.gameObject;
+				theForgroundObject.AddComponent<RectTransform>();
+				theForgroundObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
+				theForgroundObject.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
+				Debug.Log("SET :::" + theForgroundObject.name);
+				newSlider.fillRect = theForgroundObject.GetComponent<RectTransform>();
+				
+				
+				GameObject theThumb;
+				theThumb = oldSlider.thumb.gameObject;
+				float theTempPosition = oldSlider.thumb.gameObject.transform.position.x;
+				theThumb.gameObject.AddComponent<RectTransform>();
+				Vector3 tempPos = theThumb.gameObject.GetComponent<RectTransform>().localPosition;
+				tempPos.x *= 0;
+				tempPos.y *= 0;
+				theThumb.gameObject.GetComponent<RectTransform>().localPosition = tempPos;
+				newSlider.handleRect = theThumb.gameObject.GetComponent<RectTransform>();
+
+				if (newSlider.gameObject.GetComponent<UISliderColors>()){
+					UISliderColors oldSliderColors = newSlider.gameObject.GetComponent<UISliderColors>();
+					uUISliderColors newSliderColors =  newSlider.gameObject.AddComponent<uUISliderColors>();
+					newSliderColors.theSprite = newSlider.fillRect.gameObject.GetComponent<Image>();
 				}
 			}
-
-			GameObject theForgroundObject;
-			theForgroundObject = oldSlider.foregroundWidget.gameObject;
-			theForgroundObject.AddComponent<RectTransform>();
-			theForgroundObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
-			theForgroundObject.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
-			newSlider.fillRect = theForgroundObject.GetComponent<RectTransform>();
+		}
+	}
+	#endregion
 
 
-			GameObject theThumb;
-			theThumb = oldSlider.thumb.gameObject;
-			float theTempPosition = oldSlider.thumb.gameObject.transform.position.x;
-			theThumb.gameObject.AddComponent<RectTransform>();
-			Vector3 tempPos = theThumb.gameObject.GetComponent<RectTransform>().localPosition;
+	#region AdjustSliders Components
+	static void OnAdjustSliders (GameObject selectedObject){
+		if (selectedObject.GetComponent<Slider>()){
+			Vector3 tempPos = selectedObject.GetComponent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().localPosition;
 			tempPos.x *= 0;
-			theThumb.gameObject.GetComponent<RectTransform>().localPosition = tempPos;
-			newSlider.handleRect = theThumb.gameObject.GetComponent<RectTransform>();
-			
+			tempPos.y *= 0;
+			selectedObject.GetComponent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().localPosition = tempPos;
+			selectedObject.GetComponent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
 		}
 	}
 	#endregion
@@ -810,6 +843,9 @@ public class ConverterMenu : MonoBehaviour {
 
 		for (int h=0; h<UISlidersOnChilderens.Length; h++){
 			if (UISlidersOnChilderens[h]){
+				if (UISlidersOnChilderens[h].GetComponent<UISliderColors>()){
+					DestroyImmediate (UISlidersOnChilderens[h].gameObject.GetComponent<UISliderColors>());
+				}
 				DestroyImmediate (UISlidersOnChilderens[h]);
 			}
 		}

@@ -183,6 +183,7 @@
      <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
      <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIGetScrollPercentageValue.cs" />
      <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIGetSliderPercentageValue.cs" />
+     <Compile Include="Assets\nGUI TO uGUI\Scripts\uUISliderColors.cs" />
      <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIToggle.cs" />
      <None Include="Assets\NGUI\Examples\Shaders\Unlit - Depth Cutout.shader" />
      <None Include="Assets\NGUI\ReadMe - 3.7.8.txt" />
