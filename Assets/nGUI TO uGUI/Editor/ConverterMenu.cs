@@ -748,7 +748,6 @@ public class ConverterMenu : MonoBehaviour {
 				theForgroundObject.AddComponent<RectTransform>();
 				theForgroundObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
 				theForgroundObject.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
-				Debug.Log("SET :::" + theForgroundObject.name);
 				newSlider.fillRect = theForgroundObject.GetComponent<RectTransform>();
 				
 				
@@ -765,7 +764,6 @@ public class ConverterMenu : MonoBehaviour {
 				if (newSlider.gameObject.GetComponent<UISliderColors>()){
 					UISliderColors oldSliderColors = newSlider.gameObject.GetComponent<UISliderColors>();
 					uUISliderColors newSliderColors =  newSlider.gameObject.AddComponent<uUISliderColors>();
-					newSliderColors.theSprite = newSlider.fillRect.gameObject.GetComponent<Image>();
 				}
 			}
 		}
@@ -781,6 +779,14 @@ public class ConverterMenu : MonoBehaviour {
 			tempPos.y *= 0;
 			selectedObject.GetComponent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().localPosition = tempPos;
 			selectedObject.GetComponent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
+
+			if (selectedObject.GetComponent<Slider>().direction == Slider.Direction.LeftToRight || selectedObject.GetComponent<Slider>().direction == Slider.Direction.RightToLeft){
+				selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(selectedObject.GetComponent<Slider>().handleRect.sizeDelta.x
+				                                                                                                                  ,-(selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<UISprite>().bottomAnchor.absolute*2));
+			}else{
+				selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(-(selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<UISprite>().leftAnchor.absolute*2),
+				                                                                                                                  selectedObject.GetComponent<Slider>().handleRect.sizeDelta.y);
+			}
 		}
 	}
 	#endregion

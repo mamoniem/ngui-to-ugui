@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class uUISliderColors : MonoBehaviour {
 
-	public Image theSprite;
+	public Image theSpriteHolder;
 	
 	public Color[] colors = new Color[] { Color.red, Color.yellow, Color.green };
 	
@@ -12,7 +12,8 @@ public class uUISliderColors : MonoBehaviour {
 	UIBasicSprite mSprite;
 
 	void Awake(){
-		theSprite = mSlider.fillRect.gameObject.GetComponent<Image>();
+		mSlider = this.gameObject.GetComponent<Slider>();
+		theSpriteHolder = mSlider.fillRect.gameObject.GetComponent<Image>();
 	}
 	void Start ()
 	{
@@ -23,7 +24,7 @@ public class uUISliderColors : MonoBehaviour {
 	
 	void Update ()
 	{
-		if (theSprite == null || colors.Length == 0) return;
+		if (theSpriteHolder == null || colors.Length == 0) return;
 		
 		float val = (mSlider != null) ? mSlider.value : mSprite.fillAmount;
 		val *= (colors.Length - 1);
@@ -45,7 +46,7 @@ public class uUISliderColors : MonoBehaviour {
 			else c = colors[colors.Length - 1];
 		}
 		
-		c.a = theSprite.color.a;
-		theSprite.color = c;
+		c.a = theSpriteHolder.color.a;
+		theSpriteHolder.color = c;
 	}
 }
