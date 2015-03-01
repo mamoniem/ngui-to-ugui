@@ -1,12 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/nGUI TO uGUI/Scripts/uUISliderColors.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/nGUI TO uGUI/Editor/ConverterMenu.cs">
     <Files>
-      <File FileName="Assets/nGUI TO uGUI/Editor/ConverterMenu.cs" Line="768" Column="86" />
-      <File FileName="Assets/nGUI TO uGUI/Scripts/uUIGetScrollPercentageValue.cs" Line="1" Column="1" />
-      <File FileName="Assets/nGUI TO uGUI/Scripts/uUIGetSliderPercentageValue.cs" Line="1" Column="1" />
-      <File FileName="Assets/NGUI/Examples/Scripts/Other/UISliderColors.cs" Line="17" Column="66" />
-      <File FileName="Assets/nGUI TO uGUI/Scripts/uUISliderColors.cs" Line="30" Column="42" />
+      <File FileName="Assets/nGUI TO uGUI/Editor/ConverterMenu.cs" Line="839" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

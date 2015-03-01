@@ -101,7 +101,7 @@ public class ConverterMenu : MonoBehaviour {
 	}
 	#endregion
 
-	#region Convert Wedgit Selected
+	#region Convert Widget Selected
 	[MenuItem ("nGUI TO uGUI/Wedgit Convert/Selected")]
 	static void OnConvertWedgitSelected () {
 		GameObject inProgressObject;
@@ -151,6 +151,11 @@ public class ConverterMenu : MonoBehaviour {
 					OnConvertUIButton (inProgressObject, false);
 				}
 
+				if (selectedObject.GetComponent<UIPopupList>()){
+					inProgressObject.name = selectedObject.name;
+					OnConvertUIButton (inProgressObject, false);
+				}
+
 				UIWidget[] UIWidgetsOnChilderens = inProgressObject.GetComponentsInChildren<UIWidget>();
 				UISprite[] UISpritesOnChilderens = inProgressObject.GetComponentsInChildren<UISprite>();
 				UILabel[] UILablesOnChilderens = inProgressObject.GetComponentsInChildren<UILabel>();
@@ -159,6 +164,7 @@ public class ConverterMenu : MonoBehaviour {
 				UIInput[] UIInputsOnChilderens = inProgressObject.GetComponentsInChildren<UIInput>();
 				UIScrollBar[] UIScrollBarsOnChilderens = inProgressObject.GetComponentsInChildren<UIScrollBar>();
 				UISlider[] UISlidersOnChilderens = inProgressObject.GetComponentsInChildren<UISlider>();
+				UIPopupList[] UIPopuplistsOnChilderens = inProgressObject.GetComponentsInChildren<UIPopupList>();
 
 				for (int a=0; a<UIWidgetsOnChilderens.Length; a++){
 					if (!UIWidgetsOnChilderens[a].gameObject.GetComponent<RectTransform>()){
@@ -190,6 +196,10 @@ public class ConverterMenu : MonoBehaviour {
 				}
 				for (int h=0; h<UISlidersOnChilderens.Length; h++){
 					OnConvertUISlider (UISlidersOnChilderens[h].gameObject, true);
+				}
+
+				for (int i=0; i<UIPopuplistsOnChilderens.Length; i++){
+					OnConvertUIPopuplist (UIPopuplistsOnChilderens[i].gameObject, true);
 				}
 
 				OnAdjustSliders(inProgressObject);
@@ -311,7 +321,6 @@ public class ConverterMenu : MonoBehaviour {
 	}
 	#endregion
 
-
 	#region UILabels Converter
 	static void OnConvertUILabel(GameObject selectedObject, bool isSubConvert){
 		GameObject tempObject;
@@ -346,10 +355,10 @@ public class ConverterMenu : MonoBehaviour {
 			tempText.text = originalText.text;
 			tempText.color = originalText.color;
 			tempText.gameObject.GetComponent<RectTransform>().sizeDelta = originalText.localSize;
-			tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+"FONT.ttf", typeof(Font));
-			tempText.fontSize = originalText.fontSize-4;
+			tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+originalText.bitmapFont.name+".ttf", typeof(Font));
+			tempText.fontSize = originalText.fontSize-2;
 			if (originalText.spacingY != 0){
-				tempText.lineSpacing = originalText.spacingY;
+				tempText.lineSpacing = 1 /*originalText.spacingY*/;
 			}
 			
 			if (originalText.alignment == NGUIText.Alignment.Automatic){
@@ -367,6 +376,14 @@ public class ConverterMenu : MonoBehaviour {
 			}else if (originalText.alignment == NGUIText.Alignment.Right){
 				tempText.alignment = TextAnchor.UpperRight;
 			}
+
+
+		}
+
+		if (originalText.gameObject.GetComponent<TypewriterEffect>()){
+			uUITypewriterEffect tempWriterEffect = 
+			originalText.gameObject.AddComponent<uUITypewriterEffect>();
+			DestroyImmediate(originalText.gameObject.GetComponent<TypewriterEffect>());
 		}
 
 	}
@@ -414,12 +431,21 @@ public class ConverterMenu : MonoBehaviour {
 			originalButton = selectedObject.GetComponent<UIButton>();
 			
 			//adjust the rect transform to fit the original one's size..If it have no sprite, then it must had a widget
+			if (tempObject.GetComponent<RectTransform>()){
+
+			}else{
+				tempObject.AddComponent<RectTransform>();
+			}
+
 			if (originalButton.GetComponent<UISprite>()){
 				tempObject.GetComponent<RectTransform>().sizeDelta = originalButton.GetComponent<UISprite>().localSize;
 				tempObject.GetComponent<RectTransform>().pivot = originalButton.GetComponent<UISprite>().pivotOffset;
-			}else{
+			}else if (originalButton.GetComponent<UIWidget>()){
 				tempObject.GetComponent<RectTransform>().sizeDelta = originalButton.GetComponent<UIWidget>().localSize;
 				tempObject.GetComponent<RectTransform>().pivot = originalButton.GetComponent<UIWidget>().pivotOffset;
+			}else{
+				tempObject.GetComponent<RectTransform>().sizeDelta = originalButton.GetComponent<UIButton>().tweenTarget.GetComponent<UISprite>().localSize;
+				tempObject.GetComponent<RectTransform>().pivot = originalButton.GetComponent<UIButton>().tweenTarget.GetComponent<UISprite>().pivotOffset;
 			}
 			tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -770,7 +796,52 @@ public class ConverterMenu : MonoBehaviour {
 	}
 	#endregion
 
+	#region UIPopuplist Converter
+	static void OnConvertUIPopuplist(GameObject selectedObject, bool isSubConvert){
+		GameObject tempObject;
+		uUIPopupList newPopuplist;
+		tempObject = selectedObject;
+		
+		if (tempObject.GetComponent<uUIPopupList>()){
+			
+		}else{
+			tempObject.layer = LayerMask.NameToLayer ("UI");
+			
+			if (!isSubConvert){
+				if (GameObject.FindObjectOfType<Canvas>()){
+					tempObject.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+				}else{
+					Debug.LogError ("<Color=red>The is no CANVAS in the scene</Color>, <Color=yellow>Please Add a canvas and adjust it</Color>");
+					DestroyImmediate (tempObject.gameObject);
+					return;
+				}
+			}
+			
+			newPopuplist = tempObject.AddComponent<uUIPopupList>();
 
+			//tempObject.GetComponent<RectTransform>().pivot = tempObject.GetComponent<UILabel>().pivotOffset;
+			tempObject.transform.position = selectedObject.transform.position;
+			tempObject.GetComponent<RectTransform>().sizeDelta = tempObject.GetComponent<UIWidget>().localSize;
+			tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+			
+			UIPopupList oldPopuplist = selectedObject.GetComponent<UIPopupList>();
+
+			if (newPopuplist){
+				newPopuplist.theItemsList = oldPopuplist.items;
+				newPopuplist.theItemSample = oldPopuplist.GetComponentInChildren<UILabel>().gameObject;
+				newPopuplist.selection = newPopuplist.theItemsList[0];
+				newPopuplist.canChangeTitle = true;
+
+				newPopuplist.theItemSample.gameObject.AddComponent<uUIListItem>();
+				newPopuplist.theItemSample.gameObject.AddComponent<Button>();
+
+				newPopuplist.theItemSample.gameObject.GetComponent<Button>().onClick.AddListener();
+
+			}
+		}
+	}
+	#endregion
+	
 	#region AdjustSliders Components
 	static void OnAdjustSliders (GameObject selectedObject){
 		if (selectedObject.GetComponent<Slider>()){
@@ -780,12 +851,18 @@ public class ConverterMenu : MonoBehaviour {
 			selectedObject.GetComponent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().localPosition = tempPos;
 			selectedObject.GetComponent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
 
-			if (selectedObject.GetComponent<Slider>().direction == Slider.Direction.LeftToRight || selectedObject.GetComponent<Slider>().direction == Slider.Direction.RightToLeft){
-				selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(selectedObject.GetComponent<Slider>().handleRect.sizeDelta.x
-				                                                                                                                  ,-(selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<UISprite>().bottomAnchor.absolute*2));
-			}else{
-				selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(-(selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<UISprite>().leftAnchor.absolute*2),
-				                                                                                                                  selectedObject.GetComponent<Slider>().handleRect.sizeDelta.y);
+			if (selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<UISprite>()){
+				if (selectedObject.GetComponent<Slider>().direction == Slider.Direction.LeftToRight || selectedObject.GetComponent<Slider>().direction == Slider.Direction.RightToLeft){
+					selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(selectedObject.GetComponent<Slider>().handleRect.sizeDelta.x
+					                                                                                                                  ,-(selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<UISprite>().bottomAnchor.absolute*2));
+				}else{
+					selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(-(selectedObject.GetComponent<Slider>().handleRect.gameObject.GetComponent<UISprite>().leftAnchor.absolute*2),
+					                                                                                                                  selectedObject.GetComponent<Slider>().handleRect.sizeDelta.y);
+				}
+			}
+
+			if (selectedObject.GetComponent<Slider>().fillRect.gameObject.GetComponent<UISprite>()){
+				selectedObject.GetComponent<Slider>().fillRect.gameObject.GetComponent<RectTransform>().localPosition = new Vector3 (0, 0, 0);
 			}
 		}
 	}
@@ -802,6 +879,7 @@ public class ConverterMenu : MonoBehaviour {
 		UIInput[] UIInputsOnChilderens = selectedObject.GetComponentsInChildren<UIInput>();
 		UIScrollBar[] UIScrollBarsOnChilderens = selectedObject.GetComponentsInChildren<UIScrollBar>();
 		UISlider[] UISlidersOnChilderens = selectedObject.GetComponentsInChildren<UISlider>();
+		UIPopupList[] UIPopuplistsOnChilderens = selectedObject.GetComponentsInChildren<UIPopupList>();
 
 		Collider[] CollidersOnChilderens = selectedObject.GetComponentsInChildren<Collider>();
 
@@ -856,6 +934,12 @@ public class ConverterMenu : MonoBehaviour {
 			}
 		}
 
+		for (int h=0; h<UIPopuplistsOnChilderens.Length; h++){
+			if (UIPopuplistsOnChilderens[h]){
+				DestroyImmediate (UIPopuplistsOnChilderens[h]);
+			}
+		}
+
 		for (int z=0; z<CollidersOnChilderens.Length; z++){
 			if (CollidersOnChilderens[z]){
 				DestroyImmediate (CollidersOnChilderens[z]);
@@ -878,4 +962,4 @@ public class ConverterMenu : MonoBehaviour {
 
 }
 
-// when everything done, the canvas needs to be UnParented, and have the scale of 1, and finally moved to Zero to be viewed by the camera.
+// May be when everything done, the canvas needs to be UnParented, and have the scale of 1, and finally moved to Zero to be viewed by the camera.

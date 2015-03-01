@@ -1,24 +1,45 @@
+What the tool can do:
+	- convert the nGUI atlas to a Unity Atlas
+	- Convert all the nGUI spries into Unity sprites
+	- Automatic cropping, naming and slicing for all the sprites
+	- Convert all the NGUI widgets into a UnityEngine.UI widgets. That includes (UIWedgit, UIButton, UILabel, UIInput, UISprite, UIToggles, UISLider, UIProgressbar)
+	- Convert any multi widget structure
+	- Fit All the original widgets positions
+	- Convert some custom components (like the colored sliders) to an altrnative UnityEngine.UI friendly ones
+	- Convert all the widgets at once or one by one
+	- Multi types of atlas conversions
+	- A font replacement feature to replace all the widgets fonts at once
+	- 
+
 Changes:
-- the font file
-- the font file extention
-- the main editor script file
-- the canvas name
+	- the font file
+	- the font file extention
+	- the main editor script file
+	- the canvas name
 
 
 how to use:
-- add one canvas only in the scene
-- add the font file to  the fonts root and name it font
-* defint the font file that should be used
-- convert atlases (it will auto make it self anyway)
-- convert wedgits one by one, or scene by scene
-- make sure the canvas size == the root size
-- make sure the canvas is in the UI layer
-- make sure to assign the NGUI camer to the canvas even camera
-- make sure the camera mask displaying the UI layer stuff
+	- Create a canvas in the scene
+	- force it to use world space
+	- assign the NGUI camera to it
+	- make sure tha camera can render the UI layer
+	- exclude the UI layer from any other camera
+	- attach it as a child for the root
+	- make sure the scale it 1, and the width and height matches ngui
+	- add the font file to  the fonts root and name it font
+	- start cnverting
 
 
 Limitations:
-- any custom wedgits will not be used
-- it should run with the latest ngui ( or earlier version that have no major API changes)
-- BBCode on the Text is not going to work
-- the UILabels which set to Automatic, it's result is not expected.
+	- any custom wedgits will not be used
+	- it should run with the latest ngui ( or earlier version that have no major API changes)
+	- BBCode on the Text is not going to work
+	- the UILabels which set to Automatic, it's result is not expected.
+
+
+Next Update:
+	- UIDrag::Dragging windows
+	- UIDragREsize::Resizing windows
+	- emoticons
+	- BBCode
+	- 

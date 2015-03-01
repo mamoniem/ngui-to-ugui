@@ -181,8 +181,14 @@
      <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
+     <Compile Include="Assets\nGUI TO uGUI\Scripts\Helpers\uUIDragObject.cs" />
+     <Compile Include="Assets\nGUI TO uGUI\Scripts\Helpers\uUIDragResize.cs" />
+     <Compile Include="Assets\nGUI TO uGUI\Scripts\Helpers\uUIEmoticons.cs" />
+     <Compile Include="Assets\nGUI TO uGUI\Scripts\Helpers\uUITypewriterEffect.cs" />
      <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIGetScrollPercentageValue.cs" />
      <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIGetSliderPercentageValue.cs" />
+     <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIListItem.cs" />
+     <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIPopupList.cs" />
      <Compile Include="Assets\nGUI TO uGUI\Scripts\uUISliderColors.cs" />
      <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIToggle.cs" />
      <None Include="Assets\NGUI\Examples\Shaders\Unlit - Depth Cutout.shader" />
