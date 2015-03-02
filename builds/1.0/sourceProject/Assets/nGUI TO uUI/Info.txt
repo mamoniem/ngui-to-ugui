@@ -1,0 +1,27 @@
+[nGUI to uUI]
+
+Tool by:
+Muhammad A.Moniem
+
+v1.0
+
+If you purchased the tool then enjoy it. If you got it cracked :) please do purchase it if you like it, or it helped you!
+
+for any questions or bug reporting:
+http://www.mamoniem.com/products/ngui-to-uui/
+
+how to use:
+	- Create a canvas in the scene
+	- Force it to use world space
+	- Assign the NGUI camera to it
+	- Make sure tha camera can render the UI layer
+	- Exclude the UI layer from any other camera
+	- Attach it as a child for the root
+	- Make sure the scale it 1, and the width and height matches ngui
+	- Add the font file to  the fonts root and name it font
+	- Start converting
+
+Notes:
+	- You can later delete the original nGUI widgets, the tool keeps them for your decision to remove or keep.
+	- Any logic or events need to be manually made.
+	- It requires NGUI in the project, otherwise you might get errors from some scripts that depends on NGUI existence.

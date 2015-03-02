@@ -1,0 +1,1 @@
+Place here the fonts your are going to use, Make sure it is TTF fonts and it is named as the original one used with nGUI.
