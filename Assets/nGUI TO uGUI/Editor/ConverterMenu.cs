@@ -151,10 +151,12 @@ public class ConverterMenu : MonoBehaviour {
 					OnConvertUIButton (inProgressObject, false);
 				}
 
+#if PopupLists
 				if (selectedObject.GetComponent<UIPopupList>()){
 					inProgressObject.name = selectedObject.name;
 					OnConvertUIButton (inProgressObject, false);
 				}
+#endif
 
 				UIWidget[] UIWidgetsOnChilderens = inProgressObject.GetComponentsInChildren<UIWidget>();
 				UISprite[] UISpritesOnChilderens = inProgressObject.GetComponentsInChildren<UISprite>();
@@ -164,7 +166,9 @@ public class ConverterMenu : MonoBehaviour {
 				UIInput[] UIInputsOnChilderens = inProgressObject.GetComponentsInChildren<UIInput>();
 				UIScrollBar[] UIScrollBarsOnChilderens = inProgressObject.GetComponentsInChildren<UIScrollBar>();
 				UISlider[] UISlidersOnChilderens = inProgressObject.GetComponentsInChildren<UISlider>();
+#if PopupLists
 				UIPopupList[] UIPopuplistsOnChilderens = inProgressObject.GetComponentsInChildren<UIPopupList>();
+#endif
 
 				for (int a=0; a<UIWidgetsOnChilderens.Length; a++){
 					if (!UIWidgetsOnChilderens[a].gameObject.GetComponent<RectTransform>()){
@@ -197,11 +201,11 @@ public class ConverterMenu : MonoBehaviour {
 				for (int h=0; h<UISlidersOnChilderens.Length; h++){
 					OnConvertUISlider (UISlidersOnChilderens[h].gameObject, true);
 				}
-
+#if PopupLists
 				for (int i=0; i<UIPopuplistsOnChilderens.Length; i++){
 					OnConvertUIPopuplist (UIPopuplistsOnChilderens[i].gameObject, true);
 				}
-
+#endif
 				OnAdjustSliders(inProgressObject);
 				OnCleanConvertedItem(GameObject.FindObjectOfType<Canvas>().gameObject);
 			}
@@ -835,7 +839,6 @@ public class ConverterMenu : MonoBehaviour {
 				newPopuplist.theItemSample.gameObject.AddComponent<uUIListItem>();
 				newPopuplist.theItemSample.gameObject.AddComponent<Button>();
 
-				newPopuplist.theItemSample.gameObject.GetComponent<Button>().onClick.AddListener();
 
 			}
 		}
@@ -879,7 +882,9 @@ public class ConverterMenu : MonoBehaviour {
 		UIInput[] UIInputsOnChilderens = selectedObject.GetComponentsInChildren<UIInput>();
 		UIScrollBar[] UIScrollBarsOnChilderens = selectedObject.GetComponentsInChildren<UIScrollBar>();
 		UISlider[] UISlidersOnChilderens = selectedObject.GetComponentsInChildren<UISlider>();
+#if PopupLists
 		UIPopupList[] UIPopuplistsOnChilderens = selectedObject.GetComponentsInChildren<UIPopupList>();
+#endif
 
 		Collider[] CollidersOnChilderens = selectedObject.GetComponentsInChildren<Collider>();
 
@@ -933,13 +938,13 @@ public class ConverterMenu : MonoBehaviour {
 				DestroyImmediate (UISlidersOnChilderens[h]);
 			}
 		}
-
+#if PopupLists
 		for (int h=0; h<UIPopuplistsOnChilderens.Length; h++){
 			if (UIPopuplistsOnChilderens[h]){
 				DestroyImmediate (UIPopuplistsOnChilderens[h]);
 			}
 		}
-
+#endif
 		for (int z=0; z<CollidersOnChilderens.Length; z++){
 			if (CollidersOnChilderens[z]){
 				DestroyImmediate (CollidersOnChilderens[z]);
