@@ -146,6 +146,7 @@
      <None Include="Assets\NGUI\Examples\Atlases\Wooden\Arimo18.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (TextureClip).shader" />
      <None Include="Assets\NGUI\Examples\Atlases\SciFi\SciFi Font - Header.txt" />
+     <None Include="Assets\nGUI TO uUI\CONVERSION_DATA\FONTS\IMPORTANT.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored 1.shader" />
      <None Include="Assets\NGUI\Examples\Atlases\Fantasy\Fantasy Font - Normal.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored 3.shader" />
@@ -177,6 +178,12 @@
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>/Applications/Unity 4.6.2/Unity.app/Contents/Frameworks/Managed/UnityEditor.Graphs.dll</HintPath>
+ </Reference>
+ <Reference Include="AssetStoreTools">
+ <HintPath>/Users/Muhammad/Work/Tools/ngui-to-ugui/builds/1.0/sourceProject/Assets/AssetStoreTools/Editor/AssetStoreTools.dll</HintPath>
+ </Reference>
+ <Reference Include="AssetStoreToolsExtra">
+ <HintPath>/Users/Muhammad/Work/Tools/ngui-to-ugui/builds/1.0/sourceProject/Assets/AssetStoreTools/Editor/AssetStoreToolsExtra.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

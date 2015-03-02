@@ -181,9 +181,6 @@
      <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
-     <Compile Include="Assets\nGUI TO uUI\Scripts\Helpers\uUIDragObject.cs" />
-     <Compile Include="Assets\nGUI TO uUI\Scripts\Helpers\uUIDragResize.cs" />
-     <Compile Include="Assets\nGUI TO uUI\Scripts\Helpers\uUIEmoticons.cs" />
      <Compile Include="Assets\nGUI TO uUI\Scripts\Helpers\uUITypewriterEffect.cs" />
      <Compile Include="Assets\nGUI TO uUI\Scripts\uUIGetScrollPercentageValue.cs" />
      <Compile Include="Assets\nGUI TO uUI\Scripts\uUIGetSliderPercentageValue.cs" />
@@ -207,6 +204,7 @@
      <None Include="Assets\NGUI\Examples\Atlases\Wooden\Arimo18.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (TextureClip).shader" />
      <None Include="Assets\NGUI\Examples\Atlases\SciFi\SciFi Font - Header.txt" />
+     <None Include="Assets\nGUI TO uUI\CONVERSION_DATA\FONTS\IMPORTANT.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored 1.shader" />
      <None Include="Assets\NGUI\Examples\Atlases\Fantasy\Fantasy Font - Normal.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored 3.shader" />
