@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿// All Rights Reserved, Muhammad A.Moniem (mamoniem) 2015  http://www.mamoniem.com 
+// v1.0
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;

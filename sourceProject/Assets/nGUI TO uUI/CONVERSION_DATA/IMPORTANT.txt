@@ -1,0 +1,1 @@
+All the converted Atlases/Sprites will rest in that directory. So please make sure to never delete it!

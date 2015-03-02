@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{25CC629B-091C-B887-1A6C-13A27EF9D799}</ProjectGuid>
+	<ProjectGuid>{48660DDD-9C77-4ADD-9A52-B98C70BBD840}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -181,22 +181,23 @@
      <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\Helpers\uUIDragObject.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\Helpers\uUIDragResize.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\Helpers\uUIEmoticons.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\Helpers\uUITypewriterEffect.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIGetScrollPercentageValue.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIGetSliderPercentageValue.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIListItem.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIPopupList.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\uUISliderColors.cs" />
-     <Compile Include="Assets\nGUI TO uGUI\Scripts\uUIToggle.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\Helpers\uUIDragObject.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\Helpers\uUIDragResize.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\Helpers\uUIEmoticons.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\Helpers\uUITypewriterEffect.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\uUIGetScrollPercentageValue.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\uUIGetSliderPercentageValue.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\uUIListItem.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\uUIPopupList.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\uUISliderColors.cs" />
+     <Compile Include="Assets\nGUI TO uUI\Scripts\uUIToggle.cs" />
      <None Include="Assets\NGUI\Examples\Shaders\Unlit - Depth Cutout.shader" />
      <None Include="Assets\NGUI\ReadMe - 3.7.8.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Text 2.shader" />
      <None Include="Assets\NGUI\Examples\Models\Orc\Orc Skin.shader" />
      <None Include="Assets\NGUI\Examples\Atlases\Wooden\Arimo20.txt" />
      <None Include="Assets\NGUI\Examples\Atlases\Wooden\Arimo14.txt" />
+     <None Include="Assets\nGUI TO uUI\CONVERSION_DATA\IMPORTANT.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Text 1.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored (TextureClip).shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (Packed) (TextureClip).shader" />
@@ -211,6 +212,7 @@
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored 3.shader" />
      <None Include="Assets\NGUI\Examples\Atlases\Refractive\Refractive Font - Normal.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored 2.shader" />
+     <None Include="Assets\nGUI TO uUI\Info.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Text 3.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Packed 2.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Packed 1.shader" />

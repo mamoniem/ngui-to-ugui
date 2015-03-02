@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿// All Rights Reserved, Muhammad A.Moniem (mamoniem) 2015  http://www.mamoniem.com 
+// v1.0
+using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using System.Collections;
@@ -18,8 +20,8 @@ public class ConverterMenu : MonoBehaviour {
 				if (selectedObject.GetComponent<UIAtlas>()){
 					UIAtlas tempNguiAtlas;
 					tempNguiAtlas = selectedObject.GetComponent<UIAtlas>();
-					if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
-						Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+					if (File.Exists("Assets/nGUI TO uUI/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+						Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"nGUI TO uUI/CONVERSION_DATA\" </color>Directory");
 					}else{
 						ConvertAtlas(tempNguiAtlas);
 					}
@@ -39,8 +41,8 @@ public class ConverterMenu : MonoBehaviour {
 		for (int c=0; c<FoundAtlasesList.Length; c++){
 			UIAtlas tempNguiAtlas;
 			tempNguiAtlas = FoundAtlasesList[c].atlas;
-			if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
-				Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+			if (File.Exists("Assets/nGUI TO uUI/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+				Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"nGUI TO uUI/CONVERSION_DATA\" </color>Directory");
 			}else{
 				ConvertAtlas(tempNguiAtlas);
 			}
@@ -56,8 +58,8 @@ public class ConverterMenu : MonoBehaviour {
 				if (selectedObject.GetComponent<UISprite>()){
 					UIAtlas tempNguiAtlas;
 					tempNguiAtlas = selectedObject.GetComponent<UISprite>().atlas;
-					if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
-						Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+					if (File.Exists("Assets/nGUI TO uUI/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+						Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"nGUI TO uUI/CONVERSION_DATA\" </color>Directory");
 					}else{
 						ConvertAtlas(tempNguiAtlas);
 					}
@@ -69,16 +71,16 @@ public class ConverterMenu : MonoBehaviour {
 
 	#region PROCEDURALS Convert Atlas
 	static void ConvertAtlas(UIAtlas theAtlas){
-		if(!Directory.Exists("Assets/CONVERSION_DATA")){
-			AssetDatabase.CreateFolder ("Assets", "CONVERSION_DATA");
+		if(!Directory.Exists("Assets/nGUI TO uUI/CONVERSION_DATA")){
+			AssetDatabase.CreateFolder ("Assets", "nGUI TO uUI/CONVERSION_DATA");
 		}else{
 			
 		}
-		AssetDatabase.CopyAsset (AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(theAtlas.name)[0]), "Assets/CONVERSION_DATA/"+theAtlas.name+".png");
+		AssetDatabase.CopyAsset (AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(theAtlas.name)[0]), "Assets/nGUI TO uUI/CONVERSION_DATA/"+theAtlas.name+".png");
 		AssetDatabase.Refresh();
-		//Debug.Log(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(theAtlas.name)[0]) + "\n" + "Assets/CONVERSION_DATA/"+theAtlas.name+".png");
+		//Debug.Log(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets(theAtlas.name)[0]) + "\n" + "Assets/nGUI TO uUI/CONVERSION_DATA/"+theAtlas.name+".png");
 		
-		string conversionPath = "Assets/CONVERSION_DATA/"+theAtlas.name+".png";
+		string conversionPath = "Assets/nGUI TO uUI/CONVERSION_DATA/"+theAtlas.name+".png";
 		TextureImporter importer = (TextureImporter)TextureImporter.GetAtPath(conversionPath);
 		importer.textureType = TextureImporterType.Sprite;
 		importer.mipmapEnabled = false;
@@ -251,8 +253,8 @@ public class ConverterMenu : MonoBehaviour {
 
 		UIAtlas tempNguiAtlas;
 		tempNguiAtlas = selectedObject.GetComponent<UISprite>().atlas;
-		if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
-			Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+		if (File.Exists("Assets/nGUI TO uUI/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+			Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"nGUI TO uUI/CONVERSION_DATA\" </color>Directory");
 		}else{
 			ConvertAtlas(tempNguiAtlas);
 		}
@@ -288,7 +290,7 @@ public class ConverterMenu : MonoBehaviour {
 		tempObject.GetComponent<RectTransform>().sizeDelta = originalSprite.localSize;
 		tempObject.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
 		
-		Sprite[] sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/CONVERSION_DATA/" + originalSprite.atlas.name + ".png").OfType<Sprite>().ToArray();
+		Sprite[] sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/nGUI TO uUI/CONVERSION_DATA/" + originalSprite.atlas.name + ".png").OfType<Sprite>().ToArray();
 		for (int c=0; c<sprites.Length; c++){
 			if (sprites[c].name == originalSprite.spriteName){
 				addedImage.sprite = sprites[c];
@@ -359,7 +361,7 @@ public class ConverterMenu : MonoBehaviour {
 			tempText.text = originalText.text;
 			tempText.color = originalText.color;
 			tempText.gameObject.GetComponent<RectTransform>().sizeDelta = originalText.localSize;
-			tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/CONVERSION_DATA/FONTS/"+originalText.bitmapFont.name+".ttf", typeof(Font));
+			tempText.font = (Font)AssetDatabase.LoadAssetAtPath("Assets/nGUI TO uUI/CONVERSION_DATA/FONTS/"+originalText.bitmapFont.name+".ttf", typeof(Font));
 			tempText.fontSize = originalText.fontSize-2;
 			if (originalText.spacingY != 0){
 				tempText.lineSpacing = 1 /*originalText.spacingY*/;
@@ -401,8 +403,8 @@ public class ConverterMenu : MonoBehaviour {
 		/*
 		UIAtlas tempNguiAtlas;
 		tempNguiAtlas = selectedObject.GetComponent<UISprite>().atlas;
-		if (File.Exists("Assets/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
-			Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"CONVERSION_DATA\" </color>Directory");
+		if (File.Exists("Assets/nGUI TO uUI/CONVERSION_DATA/"+tempNguiAtlas.name+".png")){
+			Debug.Log ("The Atlas <color=yellow>" + tempNguiAtlas.name + " </color>was Already Converted, Check the<color=yellow> \"nGUI TO uUI/CONVERSION_DATA\" </color>Directory");
 		}else{
 			ConvertAtlas(tempNguiAtlas);
 		}
@@ -456,9 +458,9 @@ public class ConverterMenu : MonoBehaviour {
 			//if the object ahve no UISprites, then a sub object must have!
 			Sprite[] sprites;
 			if (originalButton.GetComponent<UISprite>()){
-				sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/CONVERSION_DATA/" + originalButton.GetComponent<UISprite>().atlas.name + ".png").OfType<Sprite>().ToArray();
+				sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/nGUI TO uUI/CONVERSION_DATA/" + originalButton.GetComponent<UISprite>().atlas.name + ".png").OfType<Sprite>().ToArray();
 			}else{
-				sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/CONVERSION_DATA/" + originalButton.gameObject.GetComponentInChildren<UISprite>().atlas.name + ".png").OfType<Sprite>().ToArray();
+				sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/nGUI TO uUI/CONVERSION_DATA/" + originalButton.gameObject.GetComponentInChildren<UISprite>().atlas.name + ".png").OfType<Sprite>().ToArray();
 			}
 
 			if (tempObject.gameObject.GetComponent<UIToggle>()){
@@ -573,7 +575,7 @@ public class ConverterMenu : MonoBehaviour {
 			for (int x=0; x< childImages.Length; x++){
 				if (childImages[x].spriteName == tempObject.GetComponent<UIToggle>().activeSprite.gameObject.GetComponent<UISprite>().spriteName){
 					Sprite[] sprites;
-					sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/CONVERSION_DATA/" + childImages[x].atlas.name + ".png").OfType<Sprite>().ToArray();
+					sprites = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/nGUI TO uUI/CONVERSION_DATA/" + childImages[x].atlas.name + ".png").OfType<Sprite>().ToArray();
 					for (int c=0; c<sprites.Length; c++){
 						if (sprites[c].name == childImages[x].spriteName){
 							addedToggleController.m_Sprite = sprites[c];

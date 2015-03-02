@@ -1,3 +1,5 @@
+// All Rights Reserved, Muhammad A.Moniem (mamoniem) 2015  http://www.mamoniem.com 
+// v1.0
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
