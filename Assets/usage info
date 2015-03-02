@@ -5,18 +5,9 @@ What the tool can do:
 	- Convert all the NGUI widgets into a UnityEngine.UI widgets. That includes (UIWedgit, UIButton, UILabel, UIInput, UISprite, UIToggles, UISLider, UIProgressbar)
 	- Convert any multi widget structure
 	- Fit All the original widgets positions
-	- Convert some custom components (like the colored sliders) to an altrnative UnityEngine.UI friendly ones
+	- Convert some custom components (like the colored sliders, Typewriter,..etc) to an altrnative UnityEngine.UI friendly ones
 	- Convert all the widgets at once or one by one
 	- Multi types of atlas conversions
-	- A font replacement feature to replace all the widgets fonts at once
-	- 
-
-Changes:
-	- the font file
-	- the font file extention
-	- the main editor script file
-	- the canvas name
-
 
 how to use:
 	- Create a canvas in the scene
@@ -31,15 +22,17 @@ how to use:
 
 
 Limitations:
-	- any custom wedgits will not be used
-	- it should run with the latest ngui ( or earlier version that have no major API changes)
-	- BBCode on the Text is not going to work
-	- the UILabels which set to Automatic, it's result is not expected.
+	- Any custom wedgits (home made) will not be converted
+	- It should run with the latest ngui ( or earlier version that have no major API changes)
+	- BBCode on the Text is not going to work (planned to be supported later)
+	- the UILabels which set to Automatic, it's result is not expected (80% correct)
+	- Only TTF fonts (OTF planned to be supported)
 
 
 Next Update:
+	- UIPopupList support
 	- UIDrag::Dragging windows
 	- UIDragREsize::Resizing windows
 	- emoticons
 	- BBCode
-	- 
+	- A font replacement feature to replace all the widgets fonts at once
